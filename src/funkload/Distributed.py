@@ -540,10 +540,14 @@ class DistributionMgr(threading.Thread):
         """
         """
         threads = []
-        trace("* Starting %d workers" % len(self._workers))
 
+        trace("* setUpDistributedBench hook: ")
         self.test.setUpDistributedBench()
+        trace("done.\n")
+
         self.startMonitors()
+
+        trace("* Starting %d workers" % len(self._workers))
         for worker in self._workers:
             remote_res_dir = os.path.join(self.remote_res_dir, worker.name)
             venv = os.path.join(remote_res_dir, self.tarred_testsdir)
@@ -555,8 +559,12 @@ class DistributionMgr(threading.Thread):
         trace("\n")
         [t.join() for t in threads]
         trace("\n")
+
         self.stopMonitors()
+
+        trace("* tearDownDistributedBench hook: ")
         self.test.tearDownDistributedBench()
+        trace("done.\n")
 
         for thread, worker in zip(threads, self._workers):
             self._worker_results[worker] = thread.output.read()

@@ -545,6 +545,7 @@ class DistributionMgr(threading.Thread):
         threads = []
         trace("* Starting %d workers" % len(self._workers))
 
+        self.test.setUpDistributedBench()
         self.startMonitors()
         for worker in self._workers:
             remote_res_dir = os.path.join(self.remote_res_dir, worker.name)
@@ -557,6 +558,8 @@ class DistributionMgr(threading.Thread):
         trace("\n")
         [t.join() for t in threads]
         trace("\n")
+        self.stopMonitors()
+        self.test.tearDownDistributedBench()
 
         for thread, worker in zip(threads, self._workers):
             self._worker_results[worker] = thread.output.read()
@@ -567,7 +570,6 @@ class DistributionMgr(threading.Thread):
                         in err_string.split("\n") if k.strip()))
             trace("\n")
 
-        self.stopMonitors()
         self.correlate_statistics()
 
     def final_collect(self):

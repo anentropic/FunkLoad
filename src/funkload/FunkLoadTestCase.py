@@ -103,6 +103,7 @@ class FunkLoadTestCase(unittest.TestCase):
             self._loop_records = []
         if sys.version_info >= (2, 5):
             self.__exc_info = sys.exc_info
+        self._is_distributed = False
 
 
     def _funkload_init(self):
@@ -744,9 +745,27 @@ class FunkLoadTestCase(unittest.TestCase):
         pass
 
     def tearDownBench(self):
-        """Called after a the bench."""
+        """Called after the bench."""
         pass
 
+    #------------------------------------------------------------
+    # Extend unittest.TestCase to provide distributed bench setup/teardown hook
+    #
+    def setUpDistributedBench(self):
+        """
+        Called on master before the start of the distributed bench.
+        ...setUpBench will subsequently be called on each worker as they start
+        their individual bench runs.
+        """
+        pass
+
+    def tearDownDistributedBench(self):
+        """
+        Called on master after the distributed bench.
+        ...tearDownBench will have already been called on each worker as they
+        finish their individual bench runs.
+        """
+        pass
 
 
     #------------------------------------------------------------

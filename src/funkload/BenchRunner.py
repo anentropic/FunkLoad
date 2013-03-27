@@ -292,6 +292,8 @@ class BenchRunner:
         self.monitor_hosts = monitor_hosts
         # keep the test to use the result logger for monitoring
         # and call setUp/tearDown Cycle
+        if options.is_distributed:
+            test._is_distributed = True
         self.test = test
 
         # set up the feedback sender
